@@ -4,67 +4,6 @@ import triton.language as tl
 
 
 @triton.jit
-def _load_lru_cache_kernel(
-    dram_kv_cache_ptr,
-    dram_kv_cache_head_stride,
-    dram_kv_cache_page_stride,
-    hbm_kv_cache_ptr,
-    hbm_kv_cache_head_stride,
-    hbm_kv_cache_page_stride,
-    dram_page_to_hbm_page_mapping_ptr,
-    dram_page_to_hbm_page_mapping_head_stride,
-    topk_dram_page_index_ptr,
-    topk_dram_page_index_head_stride,
-    hbm_cache_length_ptr,
-    PAGE_DIM: tl.constexpr,
-    BLOCK_SIZE: tl.constexpr,
-    K: tl.constexpr,
-):
-    head_idx = tl.program_id(0).to(tl.int64)
-    eviction_pointer = 0
-
-    for k in tl.range(K):
-        dram_page = tl.load(
-            topk_dram_page_index_ptr + topk_dram_page_index_head_stride * head_idx + k
-        )
-        hbm_page = tl.load(
-            dram_page_to_hbm_page_mapping_ptr
-            + dram_page_to_hbm_page_mapping_head_stride * head_idx
-            + dram_page
-        )
-        if hbm_page == -1:
-            # Page not in HBM, get the next page to evict
-            lru_hbm_page = eviction_pointer
-            tl.store(
-                dram_page_to_hbm_page_mapping_ptr
-                + dram_page_to_hbm_page_mapping_head_stride * head_idx
-                + dram_page,
-                -2 - lru_hbm_page,
-            )
-            # Load page from DRAM to HBM
-            for i in tl.range(PAGE_DIM, step=BLOCK_SIZE, num_stages=4):
-                block = tl.load(
-                    dram_kv_cache_ptr
-                    + dram_kv_cache_head_stride * head_idx
-                    + dram_kv_cache_page_stride * dram_page
-                    + i
-                    + tl.arange(0, BLOCK_SIZE),
-                    mask=((i + tl.arange(0, BLOCK_SIZE)) < PAGE_DIM),
-                )
-                tl.store(
-                    hbm_kv_cache_ptr
-                    + hbm_kv_cache_head_stride * head_idx
-                    + hbm_kv_cache_page_stride * lru_hbm_page
-                    + i
-                    + tl.arange(0, BLOCK_SIZE),
-                    block,
-                    mask=((i + tl.arange(0, BLOCK_SIZE)) < PAGE_DIM),
-                )
-            eviction_pointer = eviction_pointer + 1
-    tl.store(hbm_cache_length_ptr + head_idx, eviction_pointer)
-
-
-@triton.jit
 def _load_lru_cache_inline_kernel(
     dram_kv_cache_ptr,
     dram_kv_cache_head_stride,

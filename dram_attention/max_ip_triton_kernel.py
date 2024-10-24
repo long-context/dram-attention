@@ -125,8 +125,6 @@ def max_inner_product(q, min_max):
 
 
 def max_ip_ref(q, min_max):
-    import math
-
     N, H, D = q.shape
     H1, L, R, D1 = min_max.shape
     assert H1 == H and D1 == D

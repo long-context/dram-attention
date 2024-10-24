@@ -239,15 +239,6 @@ class LRUCache(torch.nn.Module):
         k_cache, v_cache = _cache.unbind(dim=2)
         return CacheOutput(k_cache=k_cache, v_cache=v_cache)
 
-    def update_page_access_time_(self, scores: torch.Tensor):
-        """
-        Update the access time of pages based on scores.
-
-        Args:
-            scores (torch.Tensor): Scores to add to page access times.
-        """
-        self.page_access_time.add_(scores)
-
     def get_kv_cache_(self, q: torch.Tensor) -> CacheOutput:
         """
         Query the KVCache using query vectors and return the corresponding key-value cache.

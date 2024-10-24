@@ -17,9 +17,10 @@ __version__ = _get_version()
 URL = "https://github.com/long-context/dram-attention"
 
 install_requires = [
-    "torch>=2.4",
     "cupy-cuda12x>=13.3.0",
     "flash-attn>=2.6.3",
+    "torch>=2.4",
+    "triton>=3.1.0",
 ]
 setup_requires = []
 tests_requires = ["pytest"]
