@@ -4,7 +4,7 @@ Our evaluation uses the `Llama-3.1-8B-Instruct` model on the `niah_multikey_2` s
 
 
 ```
-pip install huggingface-hub torch flash-attn --no-build-isolation
+pip install huggingface-hub
 huggingface-cli login --token [INSERT_YOUR_HF_TOKEN]
 bash download.sh
 bash run_eval.sh

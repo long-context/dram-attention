@@ -6,7 +6,7 @@ DRAM Attention uses an LRU cache mechanism to efficiently manage the KV cache be
 
 To install DRAM Attention:
 ```
-git clone git+https://github.com/long-context/dram-attention
+git clone https://github.com/long-context/dram-attention.git
 cd dram-attention
 pip install -e .
 ```
@@ -58,9 +58,9 @@ output = attention(xq, xk, xv, start_pos=0, stage="prefill")
 # Generate stage: Generate one token at a time
 output = attention(xq, xk, xv, start_pos=pos, stage="generate")
 ```
-DRAMAttention works in two stages:
-- `prefill`: Initial pass that processes the input sequence and initializes both local and LRU caches
-- `generate`: Generates new tokens one at a time, using both the local cache for recent tokens and selectively loading relevant pages from DRAM to HBM via the LRU cache
+DRAM Attention works in two stages:
+- `prefill`: Initial pass that processes the input sequence and initializes both local and LRU caches.
+- `generate`: Generates new tokens one at a time, using both the local cache for recent tokens and selectively loading relevant pages from DRAM to HBM via the LRU cache.
 
 ## Prior Work
 

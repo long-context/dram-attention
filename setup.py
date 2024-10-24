@@ -19,12 +19,10 @@ URL = "https://github.com/long-context/dram-attention"
 install_requires = [
     "torch>=2.4",
     "cupy-cuda12x>=13.3.0",
+    "flash-attn>=2.6.3",
 ]
 setup_requires = []
-tests_requires = [
-    "pytest",
-    "tqdm",
-]
+tests_requires = ["pytest"]
 
 setup(
     name="dram-attention",
