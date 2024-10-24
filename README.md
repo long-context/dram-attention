@@ -8,8 +8,11 @@ To install DRAM Attention:
 ```
 git clone https://github.com/long-context/dram-attention.git
 cd dram-attention
-pip install -e .
+pip install ninja packaging
+MAX_JOBS=8 pip install -e .
 ```
+
+You can reduce `MAX_JOBS` if you get an OOM error due to too many files being built in parallel.
 
 ## Evaluation
 

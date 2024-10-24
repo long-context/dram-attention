@@ -22,7 +22,11 @@ install_requires = [
     "torch>=2.4",
     "triton>=3.1.0",
 ]
-setup_requires = []
+setup_requires = [
+    "ninja",
+    "packaging",
+    "psutil", 
+]
 tests_requires = ["pytest"]
 
 setup(
@@ -34,11 +38,11 @@ setup(
     author="Tanthong Nguyen",
     url=URL,
     keywords=[
-        "self-attention",
-        "pytorch",
-        "hbm",
         "dram",
+        "hbm",
         "offload",
+        "pytorch",
+        "self-attention",
     ],
     install_requires=install_requires,
     setup_requires=setup_requires,
