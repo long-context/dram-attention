@@ -26,7 +26,6 @@ parser.add_argument("--top-k", type=int, default=4096)
 parser.add_argument("--page-size", type=int, default=16)
 parser.add_argument("--run-name", type=str, default=None)
 parser.add_argument("--local-attn-window", type=int, default=4096)
-parser.add_argument("--num-full-attention-layers", type=int, default=0)
 parser.add_argument("--data-dir", default="/tmp/data/ruler/niah_multikey_2")
 FLAGS = parser.parse_args()
 
@@ -39,7 +38,6 @@ logger.info(f"  Top-k value: {FLAGS.top_k}")
 logger.info(f"  Page size: {FLAGS.page_size}")
 logger.info(f"  Run name: {FLAGS.run_name}")
 logger.info(f"  Local attention window: {FLAGS.local_attn_window}")
-logger.info(f"  Number of full attention layers: {FLAGS.num_full_attention_layers}")
 logger.info(f"  Data directory: {FLAGS.data_dir}")
 
 data_file = f"{FLAGS.data_dir}/validation_{FLAGS.seq_len}.jsonl"
