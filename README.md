@@ -18,13 +18,13 @@ You can reduce `MAX_JOBS` if you get an OOM error due to too many files being bu
 
 We evaluated our model on `niah_multikey_2`, a simple key-value retrieval task from the [RULER benchmark](https://arxiv.org/abs/2404.06654). The results below show recall metrics at different sequence lengths (higher is better):
 
-| Seq Len | Full Attention | DRAM Attention | Quest             |
-|---------|----------------|----------------|-------------------|
-| 8,192   | 1.00           | 1.00           | 1.00              |
-| 16,384  | 1.00           | 1.00           | 1.00              |
-| 32,768  | 1.00           | 1.00           | 0.97              |
-| 65,536  | 0.99           | 0.99           | 0.88              |
-| 131,072 | 0.98           | 0.94           | 0.49              |
+| Seq Len | Full Attention | DRAM Attention | Quest |
+|--------:|:-------------:|:--------------:|:-----:|
+| 8,192   | 1.00         | 1.00           | 1.00  |
+| 16,384  | 1.00         | 1.00           | 1.00  |
+| 32,768  | 1.00         | 1.00           | 0.97  |
+| 65,536  | 0.99         | 0.99           | 0.88  |
+| 131,072 | 0.98         | 0.94           | 0.49  |
 
 To run the evaluation, go to `evaluation/dram-attention` and follow the instructions in `README.md`.
 
