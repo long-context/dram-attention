@@ -116,28 +116,25 @@ def _update_page_access_time_(
     topk_dram_page_index_ptr,
     topk_dram_page_index_head_stride,
     current_step_ptr,
-    K: tl.constexpr,
 ):
     head_idx = tl.program_id(0).to(tl.int64)
+    k = tl.program_id(1).to(tl.int64)
     current_step = tl.load(current_step_ptr)
-    for k in tl.range(K):
-        # Load the DRAM page index
-        dram_page = tl.load(
-            topk_dram_page_index_ptr + topk_dram_page_index_head_stride * head_idx + k
-        )
-        hbm_page = tl.load(
-            dram_page_to_hbm_page_mapping_ptr
-            + dram_page_to_hbm_page_mapping_head_stride * head_idx
-            + dram_page
-        )
-        if hbm_page >= 0:
-            # Update the access time for this page to the current step
-            tl.store(
-                page_access_time_ptr
-                + page_access_time_head_stride * head_idx
-                + hbm_page,
-                current_step,
-            )
+    # Load the DRAM page index
+    dram_page = tl.load(
+        topk_dram_page_index_ptr + topk_dram_page_index_head_stride * head_idx + k
+    )
+    hbm_page = tl.load(
+        dram_page_to_hbm_page_mapping_ptr
+        + dram_page_to_hbm_page_mapping_head_stride * head_idx
+        + dram_page
+    )
+    # Update the access time for this page to the current step
+    tl.store(
+        page_access_time_ptr + page_access_time_head_stride * head_idx + hbm_page,
+        current_step,
+        mask=hbm_page >= 0,
+    )
 
 
 def load_lru_cache_(
@@ -159,7 +156,7 @@ def load_lru_cache_(
     )
 
     # Update page access times
-    _update_page_access_time_[(num_heads,)](
+    _update_page_access_time_[(num_heads, k)](
         page_access_time,
         page_access_time.stride(0),
         dram_page_to_hbm_page_mapping,
@@ -167,7 +164,6 @@ def load_lru_cache_(
         topk_dram_page_index,
         topk_dram_page_index.stride(0),
         current_step_ptr=current_step,
-        K=k,
     )
 
     # Sort page access times and get indices
